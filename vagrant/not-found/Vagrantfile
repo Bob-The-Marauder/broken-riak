@@ -1,0 +1,190 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+# All Vagrant configuration is done below. The "2" in Vagrant.configure
+# configures the configuration version (we support older styles for
+# backwards compatibility). Please don't change it unless you know what
+# you're doing.
+Vagrant.configure("2") do |config|
+
+  ##########
+  # Riak 1 #
+  ##########
+
+  # Configure box
+	config.vm.define "riak1" do |riak1|
+		riak1.vm.box = "centos/6"
+		riak1.vm.hostname = "riak1"
+		riak1.vm.network :private_network, ip: "10.254.253.250"
+		riak1.vm.provider :virtualbox do |v|
+	 		v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+  			v.customize ["modifyvm", :id, "--memory", 512]
+ 			v.customize ["modifyvm", :id, "--name", "riak1"]
+		end
+		riak1.vm.provision "shell", inline: <<-SHELL
+  # Install relevant packages
+     		yum install -y wget curl
+  # Get Riak
+     		wget http://s3.amazonaws.com/downloads.basho.com/riak/2.2/2.2.0/rhel/6/riak-2.2.0-1.el6.x86_64.rpm
+  # Install Riak
+     		yum localinstall -y riak*
+		sed -i "s/nodename = riak@127.0.0.1/nodename = riak@10.254.253.250/g" /etc/riak/riak.conf
+		sed -i "s/listener.http.internal = 127.0.0.1:8098/listener.http.internal = 10.254.253.250:8098/g" /etc/riak/riak.conf
+  # OS tweak for better Riak performance
+  		ulimit -n 65536
+  # Start Riak  
+     		riak start
+	SHELL
+	end
+
+  ##########
+  # Riak 2 #
+  ##########
+
+  # Configure box
+	config.vm.define "riak2" do |riak2|
+		riak2.vm.box = "centos/6"
+		riak2.vm.hostname = "riak2"
+		riak2.vm.network :private_network, ip: "10.254.253.251"
+		riak2.vm.provider :virtualbox do |v|
+	 		v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+  			v.customize ["modifyvm", :id, "--memory", 512]
+ 			v.customize ["modifyvm", :id, "--name", "riak2"]
+		end
+		riak2.vm.provision "shell", inline: <<-SHELL
+  # Install relevant packages
+     		yum install -y wget curl
+  # Get Riak
+     		wget http://s3.amazonaws.com/downloads.basho.com/riak/2.2/2.2.0/rhel/6/riak-2.2.0-1.el6.x86_64.rpm
+  # Install Riak
+     		yum localinstall -y riak*
+		sed -i "s/nodename = riak@127.0.0.1/nodename = riak@10.254.253.251/g" /etc/riak/riak.conf
+		sed -i "s/listener.http.internal = 127.0.0.1:8098/listener.http.internal = 10.254.253.251:8098/g" /etc/riak/riak.conf
+  # OS tweak for better Riak performance
+  		ulimit -n 65536
+  # Start Riak  
+     		riak start
+		riak-admin wait-for-service riak_kv riak@10.254.253.251
+		riak-admin cluster join riak@10.254.253.250
+	SHELL
+	end
+
+  ##########
+  # Riak 3 #
+  ##########
+
+  # Configure box
+	config.vm.define "riak3" do |riak3|
+		riak3.vm.box = "centos/6"
+		riak3.vm.hostname = "riak3"
+		riak3.vm.network :private_network, ip: "10.254.253.252"
+		riak3.vm.provider :virtualbox do |v|
+	 		v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+  			v.customize ["modifyvm", :id, "--memory", 512]
+ 			v.customize ["modifyvm", :id, "--name", "riak3"]
+		end
+		riak3.vm.provision "shell", inline: <<-SHELL
+  # Install relevant packages
+     		yum install -y wget curl
+  # Get Riak
+     		wget http://s3.amazonaws.com/downloads.basho.com/riak/2.2/2.2.0/rhel/6/riak-2.2.0-1.el6.x86_64.rpm
+  # Install Riak
+     		yum localinstall -y riak*
+		sed -i "s/nodename = riak@127.0.0.1/nodename = riak@10.254.253.252/g" /etc/riak/riak.conf
+		sed -i "s/listener.http.internal = 127.0.0.1:8098/listener.http.internal = 10.254.253.252:8098/g" /etc/riak/riak.conf
+  # OS tweak for better Riak performance
+  		ulimit -n 65536
+  # Start Riak  
+     		riak start
+		riak-admin wait-for-service riak_kv riak@10.254.253.252
+		riak-admin cluster join riak@10.254.253.250
+	SHELL
+	end
+
+  ##########
+  # Riak 4 #
+  ##########
+
+  # Configure box
+	config.vm.define "riak4" do |riak4|
+		riak4.vm.box = "centos/6"
+		riak4.vm.hostname = "riak4"
+		riak4.vm.network :private_network, ip: "10.254.253.253"
+		riak4.vm.provider :virtualbox do |v|
+	 		v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+  			v.customize ["modifyvm", :id, "--memory", 512]
+ 			v.customize ["modifyvm", :id, "--name", "riak4"]
+		end
+		riak4.vm.provision "shell", inline: <<-SHELL
+  # Install relevant packages
+     		yum install -y wget curl
+  # Get Riak
+     		wget http://s3.amazonaws.com/downloads.basho.com/riak/2.2/2.2.0/rhel/6/riak-2.2.0-1.el6.x86_64.rpm
+  # Install Riak
+     		yum localinstall -y riak*
+		sed -i "s/nodename = riak@127.0.0.1/nodename = riak@10.254.253.253/g" /etc/riak/riak.conf
+		sed -i "s/listener.http.internal = 127.0.0.1:8098/listener.http.internal = 10.254.253.253:8098/g" /etc/riak/riak.conf
+  # OS tweak for better Riak performance
+  		ulimit -n 65536
+  # Start Riak  
+     		riak start
+		riak-admin wait-for-service riak_kv riak@10.254.253.253
+		riak-admin cluster join riak@10.254.253.250
+		sleep 5
+		riak-admin cluster plan
+		riak-admin cluster commit
+	SHELL
+	end
+
+  ##########
+  # Riak 5 #
+  ##########
+
+  # Configure box
+	config.vm.define "riak5" do |riak5|
+		riak5.vm.box = "centos/6"
+		riak5.vm.hostname = "riak5"
+		riak5.vm.network :private_network, ip: "10.254.253.254"
+		riak5.vm.provider :virtualbox do |v|
+	 		v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+  			v.customize ["modifyvm", :id, "--memory", 512]
+ 			v.customize ["modifyvm", :id, "--name", "riak5"]
+		end
+		riak5.vm.provision "shell", inline: <<-SHELL
+  # Install relevant packages
+     		yum install -y wget curl
+  # Get Riak
+     		wget http://s3.amazonaws.com/downloads.basho.com/riak/2.2/2.2.0/rhel/6/riak-2.2.0-1.el6.x86_64.rpm
+  # Install Riak
+     		yum localinstall -y riak*
+		sed -i "s/nodename = riak@127.0.0.1/nodename = riak@10.254.253.254/g" /etc/riak/riak.conf
+		sed -i "s/listener.http.internal = 127.0.0.1:8098/listener.http.internal = 10.254.253.254:8098/g" /etc/riak/riak.conf
+  # OS tweak for better Riak performance
+  		ulimit -n 65536
+  # Start Riak  
+     		riak start
+		riak-admin wait-for-service riak_kv riak@10.254.253.254
+  # Install and configure haproxy		
+		yum install haproxy -y
+		chkconfig haproxy on
+		cp /etc/haproxy/haproxy.cfg /etc/haproxy/haproxy.cfg.old
+		sed -i "s/:5000/:80/g" /etc/haproxy/haproxy.cfg
+		sed -i "s/server  app1 127.0.0.1:5001 check/server  riak1 10.254.253.250:8098 check/g" /etc/haproxy/haproxy.cfg
+		sed -i "s/server  app2 127.0.0.1:5002 check/server  riak2 10.254.253.251:8098 check/g" /etc/haproxy/haproxy.cfg
+		sed -i "s/server  app3 127.0.0.1:5003 check/server  riak3 10.254.253.252:8098 check/g" /etc/haproxy/haproxy.cfg
+		sed -i "s/server  app4 127.0.0.1:5004 check/server  riak4 10.254.253.253:8098 check/g" /etc/haproxy/haproxy.cfg
+		echo "    server  riak5 10.254.253.254:8098 check" >> /etc/haproxy/haproxy.cfg
+		service haproxy start
+  # Add some test data
+		curl -XPUT http://localhost/riak/docs/foo \
+	        -H 'Content-Type: text/plain' -d 'demo data goes here'
+    		curl -XPUT http://localhost/riak/docs/bar \
+        	-H 'Content-Type: text/plain' -d 'demo demo demo demo'
+    		curl -XPUT http://localhost/riak/docs/baz \
+        	-H 'Content-Type: text/plain' -d 'nothing to see here'
+    		curl -XPUT http://localhost/riak/docs/qux \
+        	-H 'Content-Type: text/plain' -d 'demo demo'
+
+	SHELL
+	end
+end
